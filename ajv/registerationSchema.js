@@ -11,7 +11,7 @@ const RegisterSchema = {
       minLength: 8,
       pattern: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
     },
-    phone_number: { type: "number" },
+    phone_number: { type: "string" },
     type: { type: "string", enum: ["supplier", "client", "carrier", "admin"] },
     role_id: { type: "integer" },
     approval_code: { type: "string" },

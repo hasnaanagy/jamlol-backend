@@ -12,6 +12,7 @@ const { connectDB } = require("./Config/dbConfig");
 const appError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const authRouter = require("./routes/authRoutes");
+const appRouter = require("./routes/appRoutes");
 const userRouter = require("./routes/userRoutes");
 const roleRouter = require("./routes/roleRoutes");
 const permissionRouter = require("./routes/permissionRoutes");
@@ -67,6 +68,7 @@ app.use((req, res, next) => {
 });
 // ! Routes
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/app", appRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/roles", roleRouter);
 app.use("/api/v1/permissions", permissionRouter);
