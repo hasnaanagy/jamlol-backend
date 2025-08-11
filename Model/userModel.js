@@ -10,11 +10,15 @@ const User = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    full_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    phone_number: {
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
       type: DataTypes.STRING,
     },
     email: {
@@ -22,11 +26,17 @@ const User = sequelize.define(
       unique: true,
       allowNull: false,
     },
+    photo: {
+      type: DataTypes.STRING,
+    },
+    address: {
+      type: DataTypes.STRING,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    type: {
+    person_type: {
       type: DataTypes.ENUM("supplier", "client", "carrier", "admin"),
       allowNull: false,
     },
@@ -40,9 +50,10 @@ const User = sequelize.define(
     approval_code: {
       type: DataTypes.STRING,
     },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    status: {
+      type: DataTypes.ENUM("active", "inActive"),
+      allowNull: false,
+      defaultValue: "inActive",
     },
   },
   {

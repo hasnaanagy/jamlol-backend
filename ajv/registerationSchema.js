@@ -4,20 +4,23 @@ const ajv = new Ajv();
 const RegisterSchema = {
   type: "object",
   properties: {
-    full_name: { type: "string" },
+    name: { type: "string" },
+    username: { type: "string" },
+    phone: { type: "string" },
     email: { type: "string", pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" },
+    photo: { type: "string" },
+    address: { type: "string" },
     password: {
       type: "string",
       minLength: 8,
       pattern: "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
     },
-    phone_number: { type: "number" },
-    type: { type: "string", enum: ["supplier", "client", "carrier", "admin"] },
-    role_id: { type: "integer" },
+    person_type: { type: "string", enum: ["supplier", "client", "carrier", "admin"] },
     approval_code: { type: "string" },
-    is_active: { type: "boolean" },
+    status: { type: "string" },
+    role_id: { type: "integer" },
   },
-  required: ["full_name", "email", "password", "type"],
+  required: ["name", "username", "email", "password", "person_type", "role_id"],
   additionalProperties: false,
 };
 ajv.compile(RegisterSchema);

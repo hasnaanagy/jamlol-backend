@@ -2,14 +2,15 @@ const { Permission, RolePermission } = require("../Model");
 const catchAsync = require("../utils/catchAsync");
 
 exports.createPermission = catchAsync(async (req, res, next) => {
-  const { name, description } = req.body;
+  const { name, slug, groupBy } = req.body;
   if (!name) {
     return next(new Error("Permission name is required"));
   }
 
   const newPermission = await Permission.create({
     name,
-    description,
+    slug,
+    groupBy,
   });
 
   res.status(201).json({
@@ -30,7 +31,7 @@ exports.getAllPermissions = catchAsync(async (req, res, next) => {
 
 exports.updatePermission = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { permissionName, description } = req.body;
+  const { name, slug, groupBy } = req.body;
 
   const permission = await Permission.findByPk(id);
   if (!permission) {
@@ -38,10 +39,7 @@ exports.updatePermission = catchAsync(async (req, res, next) => {
   }
 
   // Update multiple fields
-  permission.set({
-    permissionName,
-    description,
-  });
+  permission.set(req.body);
 
   await permission.save();
   res.status(200).json({

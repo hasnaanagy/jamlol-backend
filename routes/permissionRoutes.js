@@ -5,8 +5,10 @@ const {
   updatePermission,
   deletePermission,
 } = require("../controllers/permissionController");
+const { createPermissionValidation, updatePermissionValidation } = require("../validators/RBACValidators/insertedData");
+const { insertedErrors } = require("../validators/validationResult");
 
-Router.route("/").get(getAllPermissions).post(createPermission);
-Router.route("/:id").patch(updatePermission).delete(deletePermission);
+Router.route("/").get(getAllPermissions).post(createPermissionValidation, insertedErrors, createPermission);
+Router.route("/:id").patch(updatePermissionValidation, insertedErrors, updatePermission).delete(deletePermission);
 
 module.exports = Router;

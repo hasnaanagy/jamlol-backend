@@ -6,19 +6,32 @@ const sendEmail = require("../utils/sendMail");
 const crypto = require("crypto");
 const usableRes = require("../utils/usableRes");
 const bcrypt = require("bcryptjs");
+const { Role } = require("../Model");
 // ? Signup function to create a new user
 exports.signup = catchAsync(async (req, res, next) => {
-  const { full_name, phone_number, email, type, role_id, password, carrier_approval_code, is_active } = req.body;
+  const { role_id, name, username, phone, email, photo, address, password, person_type, approval_code, status } =
+    req.body;
+
+  // TODO 3) Role check and assigning role with user to user role tabel
+  const roleData = await Role.findOne({
+    where: { id: role_id },
+  });
+
+  if (!roleData) {
+    return next(new AppError("Role not found", 404));
+  }
   const newUser = await User.create({
-    // to prevent user from sending unwanted data, we can use destructuring and rest operator
-    full_name,
-    phone_number,
-    email,
-    type,
     role_id,
+    name,
+    username,
+    phone,
+    email,
+    photo,
+    address,
     password,
-    carrier_approval_code,
-    is_active,
+    person_type,
+    approval_code,
+    status,
   });
   if (!newUser) {
     return next(new AppError("please provide a valid user data", 400));

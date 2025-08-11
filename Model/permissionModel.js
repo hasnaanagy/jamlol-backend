@@ -14,13 +14,16 @@ const Permission = sequelize.define(
       unique: true,
       allowNull: false,
     },
-    description: {
+    slug: {
       type: DataTypes.TEXT,
+    },
+    groupBy: {
+      type: DataTypes.INTEGER,
     },
   },
   {
     timestamps: true,
-    tableName: "permissions",
+    tableName: "tbl_permissions",
   }
 );
 

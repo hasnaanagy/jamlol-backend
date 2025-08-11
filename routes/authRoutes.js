@@ -5,6 +5,11 @@ const restrictionMiddleware = require("../middlewares/restrictionMiddleware");
 const { signup, login, forgotPassword, resetPassword, updatePassword } = require("../controllers/authController");
 const { getUser, updateMyData, deActivateUser } = require("../controllers/userController");
 const loginValidator = require("../middlewares/loginValidator");
+const {
+  signUpDataValidation,
+  checkUserNotExists,
+  checkUserExists,
+} = require("../validators/UserValidations/insertedData");
 
 const limiter = rateLimit({
   max: 3,
@@ -12,8 +17,8 @@ const limiter = rateLimit({
   message: "Too many tries of login requests , please try again in an 15 minutes!",
 });
 
-router.post("/signup", signup);
-router.post("/login", limiter, loginValidator, login); //! limiter => Limiting login requests
+router.post("/signup", signUpDataValidation, checkUserNotExists, signup);
+router.post("/login", limiter, loginValidator, checkUserExists, login); //! limiter => Limiting login requests
 router.post("/forgotpassword", forgotPassword);
 router.patch("/restpassword/:token", resetPassword);
 

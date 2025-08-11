@@ -1,7 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const { deleteOne, updateOne, getOne, getAll } = require("./factoryHandler");
-const { Branch, Section, Role, UserRole, User } = require("../Model");
+const { Role, User } = require("../Model");
 const { where } = require("sequelize");
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
@@ -23,7 +22,20 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const { id } = req.par;
+  const { id } = req.params;
+  const user = await User.findByPk(id, {
+    include: [{ model: Role, attributes: ["name"] }],
+    attributes: { exclude: ["password"] },
+  });
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  res.status(200).json({
+    status: "succeed",
+    data: user,
+  });
 });
 
 // ! not working yet
@@ -113,8 +125,8 @@ exports.deActivateUser = catchAsync(async (req, res, next) => {
 });
 
 exports.CreateUser = catchAsync(async (req, res, next) => {
-  const { role_id, full_name, phone_number, email, password, type, approval_code, is_active } = req.body;
-  console.log("kk", role_id, req.body);
+  const { role_id, name, username, phone, email, photo, address, password, person_type, approval_code, status } =
+    req.body;
 
   // TODO 3) Role check and assigning role with user to user role tabel
   const roleData = await Role.findOne({
@@ -126,14 +138,17 @@ exports.CreateUser = catchAsync(async (req, res, next) => {
   }
   //  TODO 4) Create user
   const newUser = await User.create({
-    full_name,
-    phone_number,
-    email,
-    password,
-    type,
-    approval_code,
-    is_active,
     role_id,
+    name,
+    username,
+    phone,
+    email,
+    photo,
+    address,
+    password,
+    person_type,
+    approval_code,
+    status,
   });
 
   if (!newUser) {

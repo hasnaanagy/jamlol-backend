@@ -14,13 +14,10 @@ const Role = sequelize.define(
       unique: true,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.TEXT,
-    },
   },
   {
     timestamps: true,
-    tableName: "roles",
+    tableName: "tbl_roles",
   }
 );
 

@@ -22,7 +22,7 @@ const RolePermission = sequelize.define(
   },
   {
     timestamps: true,
-    tableName: "role_permissions",
+    tableName: "tbl_permissions_roles",
   }
 );
 
