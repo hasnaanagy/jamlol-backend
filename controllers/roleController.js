@@ -151,3 +151,143 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
     message: "Role deleted successfully",
   });
 });
+
+// exports.createRole = catchAsync(async (req, res, next) => {
+//   const { name } = req.body;
+//   // Validate that name is provided
+//   if (!name) {
+//     return next(new appError("Role name is required", 400));
+//   }
+//   // Check if a role with the same name already exists
+//   const existingRole = await Role.findOne({ where: { name } });
+//   if (existingRole) {
+//     return next(new appError("A role with this name already exists", 400));
+//   }
+
+//   // Create the role
+//   const newRole = await Role.create({ name });
+
+//   res.status(201).json({
+//     status: "success",
+//     data: {
+//       role: newRole,
+//     },
+//   });
+// });
+
+// exports.assignPermissionsToRole = catchAsync(async (req, res, next) => {
+//   const transaction = await sequelize.transaction();
+//   try {
+//     const { roleId, permissions } = req.body;
+
+//     // Validate inputs
+//     if (!roleId || !permissions || !Array.isArray(permissions) || permissions.length === 0) {
+//       await transaction.rollback();
+//       return next(new appError("Role ID and permissions array are required", 400));
+//     }
+
+//     // Check if the role exists
+//     const role = await Role.findByPk(roleId, { transaction });
+//     if (!role) {
+//       await transaction.rollback();
+//       return next(new appError("Role not found", 404));
+//     }
+
+//     // Extract permission names
+//     const permissionNames = [...new Set(permissions.flatMap((permission) => Object.keys(permission)))];
+
+//     // Validate if all permissions exist
+//     const existingPermissions = await Permission.findAll({
+//       where: { name: { [Op.in]: permissionNames } },
+//       transaction,
+//     });
+
+//     if (existingPermissions.length !== permissionNames.length) {
+//       await transaction.rollback();
+//       return next(new appError("Some permissions not found", 404));
+//     }
+
+//     // Delete existing role permissions
+//     await RolePermission.destroy({ where: { role_id: roleId }, transaction });
+
+//     // Create new role_permissions entries
+//     const rolePermissions = existingPermissions.map((permission) => ({
+//       role_id: roleId,
+//       permission_id: permission.dataValues.id,
+//     }));
+
+//     // Bulk create role_permissions
+//     await RolePermission.bulkCreate(rolePermissions, { transaction });
+
+//     // Fetch the role with updated permissions
+//     const roleWithPermissions = await Role.findByPk(roleId, {
+//       include: [
+//         {
+//           model: Permission,
+//           attributes: ["name", "slug", "groupBy"],
+//           through: { attributes: [] },
+//         },
+//       ],
+//       transaction,
+//     });
+
+//     await transaction.commit();
+
+//     res.status(200).json({
+//       status: "success",
+//       data: {
+//         role: roleWithPermissions,
+//       },
+//     });
+//   } catch (err) {
+//     await transaction.rollback();
+//     return next(new appError(err.message, 500));
+//   }
+// });
+
+// exports.updateRole = catchAsync(async (req, res, next) => {
+//   const transaction = await sequelize.transaction();
+//   try {
+//     const { id } = req.params;
+//     const { name } = req.body;
+//     const role = await Role.findByPk(id, { transaction });
+//     if (!role) {
+//       await transaction.rollback();
+//       return next(new appError("Role not found", 404));
+//     }
+
+//     // Update the name if provided
+//     if (name) {
+//       // Check for duplicate role name
+//       const existingRole = await Role.findOne({ where: { name, id: { [Op.ne]: id } }, transaction });
+//       if (existingRole) {
+//         await transaction.rollback();
+//         return next(new appError("A role with this name already exists", 400));
+//       }
+//       role.set({ name });
+//       await role.save({ transaction });
+//     }
+
+//     // Fetch the role with permissions
+//     const roleWithPermissions = await Role.findByPk(id, {
+//       include: [
+//         {
+//           model: Permission,
+//           attributes: ["name", "slug", "groupBy"],
+//           through: { attributes: [] },
+//         },
+//       ],
+//       transaction,
+//     });
+
+//     await transaction.commit();
+
+//     res.status(200).json({
+//       status: "success",
+//       data: { role: roleWithPermissions },
+//     });
+//   } catch (err) {
+//     await transaction.rollback();
+//     next(err);
+//   }
+// });
